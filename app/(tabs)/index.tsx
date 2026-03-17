@@ -1,21 +1,29 @@
-import { signOut } from "firebase/auth";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { auth } from "../../firebase/config";
+import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import { StyleSheet, Text, View } from "react-native";
 
 export default function Home() {
-  const handleLogout = async () => {
-    await signOut(auth);
-  };
-
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Kairos 🚀</Text>
+      {/* HEADER */}
+      <LinearGradient colors={["#9333ea", "#2563eb"]} style={styles.header}>
+        <Text style={styles.title}>KairosApp</Text>
+        <Text style={styles.subtitle}>
+          Your personal mental wellness companion
+        </Text>
 
-      <Text style={styles.subtitle}>Bienvenido {auth.currentUser?.email}</Text>
+        <Ionicons
+          name="settings-outline"
+          size={20}
+          color="white"
+          style={styles.settings}
+        />
+      </LinearGradient>
 
-      <TouchableOpacity style={styles.button} onPress={handleLogout}>
-        <Text style={styles.buttonText}>Cerrar sesión</Text>
-      </TouchableOpacity>
+      {/* CONTENIDO VACÍO POR AHORA */}
+      <View style={styles.content}>
+        <Text>Contenido pendiente...</Text>
+      </View>
     </View>
   );
 }
@@ -23,26 +31,38 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#f3f4f6",
+  },
+
+  header: {
+    paddingTop: 60,
+    paddingBottom: 30,
+    alignItems: "center",
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+  },
+
+  title: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+
+  subtitle: {
+    color: "#e5e7eb",
+    fontSize: 12,
+    marginTop: 4,
+  },
+
+  settings: {
+    position: "absolute",
+    right: 20,
+    top: 60,
+  },
+
+  content: {
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#0f172a",
-  },
-  title: {
-    fontSize: 32,
-    color: "#fff",
-    marginBottom: 10,
-  },
-  subtitle: {
-    color: "#94a3b8",
-    marginBottom: 20,
-  },
-  button: {
-    backgroundColor: "#ef4444",
-    padding: 15,
-    borderRadius: 10,
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "bold",
   },
 });
