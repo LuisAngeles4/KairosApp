@@ -1,8 +1,13 @@
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import * as AuthSession from "expo-auth-session";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { useState } from "react";
+import {
+  GoogleAuthProvider,
+  signInWithCredential,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -12,10 +17,27 @@ import {
 } from "react-native";
 import { auth } from "../firebase/config";
 import { getErrorMessage } from "../utils/errors";
+import { useGoogleAuth } from "../utils/googleAuth";
+console.log(AuthSession.makeRedirectUri());
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { request, response, promptAsync } = useGoogleAuth();
+
+  useEffect(() => {
+    if (response?.type === "success") {
+      const accessToken = response.authentication?.accessToken;
+
+      console.log("ACCESS TOKEN:", accessToken);
+
+      if (!accessToken) return;
+
+      const credential = GoogleAuthProvider.credential(null, accessToken);
+
+      signInWithCredential(auth, credential);
+    }
+  }, [response]);
 
   const handleLogin = async () => {
     try {
@@ -83,10 +105,13 @@ export default function Login() {
 
         {/* SOCIAL */}
         <View style={styles.socialContainer}>
-          <View style={styles.socialButton}>
+          <TouchableOpacity
+            style={styles.socialButton}
+            onPress={() => promptAsync()}
+          >
             <FontAwesome name="google" size={18} />
             <Text> Google</Text>
-          </View>
+          </TouchableOpacity>
 
           <View style={styles.socialButton}>
             <Ionicons name="logo-apple" size={18} />
