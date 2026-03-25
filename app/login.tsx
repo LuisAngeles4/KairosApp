@@ -1,4 +1,5 @@
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import * as AppleAuthentication from "expo-apple-authentication";
 import * as AuthSession from "expo-auth-session";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
@@ -9,6 +10,7 @@ import {
 } from "firebase/auth";
 import { useEffect, useState } from "react";
 import {
+  Platform,
   StyleSheet,
   Text,
   TextInput,
@@ -46,6 +48,35 @@ export default function Login() {
       router.replace("/(tabs)");
     } catch (error: any) {
       alert(getErrorMessage(error.code));
+    }
+  };
+
+  const handleAppleLogin = async () => {
+    try {
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      });
+
+      console.log("APPLE CREDENTIAL:", credential);
+
+      // Aquí puedes integrar con Firebase si quieres
+      // const provider = new OAuthProvider("apple.com");
+      // const firebaseCredential = provider.credential({
+      //   idToken: credential.identityToken,
+      // });
+
+      // await signInWithCredential(auth, firebaseCredential);
+
+      router.replace("/(tabs)");
+    } catch (error: any) {
+      if (error.code === "ERR_CANCELED") {
+        console.log("Usuario canceló Apple login");
+      } else {
+        console.log(error);
+      }
     }
   };
 
@@ -114,10 +145,15 @@ export default function Login() {
             <Text> Google</Text>
           </TouchableOpacity>
 
-          <View style={styles.socialButton}>
-            <Ionicons name="logo-apple" size={18} />
-            <Text> Apple</Text>
-          </View>
+          {Platform.OS === "ios" && (
+            <TouchableOpacity
+              style={styles.socialButton}
+              onPress={handleAppleLogin}
+            >
+              <Ionicons name="logo-apple" size={18} />
+              <Text> Apple</Text>
+            </TouchableOpacity>
+          )}
         </View>
 
         {/* REGISTER */}

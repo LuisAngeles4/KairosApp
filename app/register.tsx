@@ -1,9 +1,16 @@
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import * as AppleAuthentication from "expo-apple-authentication";
+import * as AuthSession from "expo-auth-session";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { useState } from "react";
 import {
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithCredential,
+} from "firebase/auth";
+import { useEffect, useState } from "react";
+import {
+  Platform,
   StyleSheet,
   Text,
   TextInput,
@@ -12,13 +19,54 @@ import {
 } from "react-native";
 import { auth } from "../firebase/config";
 import { getErrorMessage } from "../utils/errors";
-console.log("ESTOY EN REGISTER");
+import { useGoogleAuth } from "../utils/googleAuth";
+
+console.log(AuthSession.makeRedirectUri());
+
 export default function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
 
+  const { request, response, promptAsync } = useGoogleAuth();
+
+  // 🔵 GOOGLE LOGIN
+  useEffect(() => {
+    if (response?.type === "success") {
+      const accessToken = response.authentication?.accessToken;
+
+      if (!accessToken) return;
+
+      const credential = GoogleAuthProvider.credential(null, accessToken);
+      signInWithCredential(auth, credential);
+
+      router.replace("/(tabs)");
+    }
+  }, [response]);
+
+  // 🍏 APPLE LOGIN
+  const handleAppleLogin = async () => {
+    try {
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      });
+
+      console.log("APPLE:", credential);
+
+      // Aquí puedes conectar con Firebase si quieres después
+
+      router.replace("/(tabs)");
+    } catch (error: any) {
+      if (error.code === "ERR_CANCELED") return;
+      console.log(error);
+    }
+  };
+
+  // 📩 REGISTER NORMAL
   const handleRegister = async () => {
     if (password !== confirm) {
       return alert("Las contraseñas no coinciden");
@@ -111,15 +159,25 @@ export default function Register() {
 
         {/* SOCIAL */}
         <View style={styles.socialContainer}>
-          <View style={styles.socialButton}>
+          {/* GOOGLE */}
+          <TouchableOpacity
+            style={styles.socialButton}
+            onPress={() => promptAsync()}
+          >
             <FontAwesome name="google" size={18} />
             <Text> Google</Text>
-          </View>
+          </TouchableOpacity>
 
-          <View style={styles.socialButton}>
-            <Ionicons name="logo-apple" size={18} />
-            <Text> Apple</Text>
-          </View>
+          {/* APPLE (solo iOS) */}
+          {Platform.OS === "ios" && (
+            <TouchableOpacity
+              style={styles.socialButton}
+              onPress={handleAppleLogin}
+            >
+              <Ionicons name="logo-apple" size={18} />
+              <Text> Apple</Text>
+            </TouchableOpacity>
+          )}
         </View>
 
         {/* LOGIN LINK */}
@@ -140,7 +198,6 @@ export default function Register() {
     </LinearGradient>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
