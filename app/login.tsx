@@ -18,6 +18,7 @@ import {
 import { auth } from "../firebase/config";
 import { getErrorMessage } from "../utils/errors";
 import { useGoogleAuth } from "../utils/googleAuth";
+
 console.log(AuthSession.makeRedirectUri());
 
 export default function Login() {
@@ -122,7 +123,10 @@ export default function Login() {
         {/* REGISTER */}
         <Text style={styles.register}>
           ¿No tienes una cuenta?{" "}
-          <Text style={{ color: "#9333ea", fontWeight: "bold" }}>
+          <Text
+            style={{ color: "#9333ea", fontWeight: "bold" }}
+            onPress={() => router.replace("/register")}
+          >
             Regístrate
           </Text>
         </Text>
@@ -137,25 +141,25 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    justifyContent: "center",
   },
   header: {
+    marginTop: 80,
+    marginBottom: 30,
     alignItems: "center",
-    marginBottom: 20,
   },
   iconContainer: {
-    backgroundColor: "#fff",
+    backgroundColor: "#ede9fe",
     padding: 15,
     borderRadius: 50,
     marginBottom: 10,
   },
   title: {
-    color: "#fff",
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
+    color: "#fff",
   },
   subtitle: {
-    color: "#e5e7eb",
+    color: "#e0e7ff",
     textAlign: "center",
   },
   card: {
@@ -164,35 +168,36 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   cardTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "bold",
-    textAlign: "center",
+    marginBottom: 5,
   },
   cardSubtitle: {
-    textAlign: "center",
     color: "#6b7280",
     marginBottom: 15,
   },
   label: {
     marginTop: 10,
-    fontWeight: "bold",
+    marginBottom: 5,
+    fontWeight: "500",
   },
   inputContainer: {
     flexDirection: "row",
-    backgroundColor: "#f3f4f6",
-    borderRadius: 10,
-    padding: 10,
     alignItems: "center",
-    marginTop: 5,
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    marginBottom: 10,
   },
   input: {
-    marginLeft: 10,
     flex: 1,
+    padding: 10,
   },
   forgot: {
     textAlign: "right",
-    color: "#9333ea",
-    marginVertical: 10,
+    color: "#6b7280",
+    marginBottom: 15,
   },
   button: {
     padding: 15,
@@ -214,10 +219,11 @@ const styles = StyleSheet.create({
   },
   socialButton: {
     flexDirection: "row",
-    padding: 10,
+    alignItems: "center",
     borderWidth: 1,
     borderColor: "#e5e7eb",
     borderRadius: 10,
+    padding: 10,
     width: "48%",
     justifyContent: "center",
   },
@@ -227,7 +233,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     textAlign: "center",
-    color: "#e5e7eb",
     marginTop: 20,
+    color: "#e0e7ff",
   },
 });
