@@ -23,7 +23,13 @@ export default function RootLayout() {
   useEffect(() => {
     if (loading) return;
 
+<<<<<<< HEAD
     const inAuth = segments[0] === "login";
+=======
+    // 🔥 Rutas públicas (auth)
+    const authRoutes = ["login", "register"];
+    const inAuth = authRoutes.includes(segments[0]);
+>>>>>>> 2475a76 (Resolviendo bug de register)
 
     if (!user && !inAuth) {
       router.replace("/login");

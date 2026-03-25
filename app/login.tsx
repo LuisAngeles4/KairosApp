@@ -122,8 +122,19 @@ export default function Login() {
         {/* REGISTER */}
         <Text style={styles.register}>
           ¿No tienes una cuenta?{" "}
+<<<<<<< HEAD
           <Text style={{ color: "#9333ea", fontWeight: "bold" }}>
             Regístrate
+=======
+          <Text style={styles.register}>
+            ¿No tienes una cuenta?{" "}
+            <Text
+              style={{ color: "#9333ea", fontWeight: "bold" }}
+              onPress={() => router.replace("/register")}
+            >
+              Regístrate
+            </Text>
+>>>>>>> 2475a76 (Resolviendo bug de register)
           </Text>
         </Text>
       </View>
