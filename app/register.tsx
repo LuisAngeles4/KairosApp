@@ -4,17 +4,6 @@ import { router } from "expo-router";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import {
-<<<<<<< HEAD
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-} from "react-native";
-import { auth } from "../firebase/config";
-import { getErrorMessage } from "../utils/errors";
-
-=======
   StyleSheet,
   Text,
   TextInput,
@@ -24,7 +13,6 @@ import { getErrorMessage } from "../utils/errors";
 import { auth } from "../firebase/config";
 import { getErrorMessage } from "../utils/errors";
 console.log("ESTOY EN REGISTER");
->>>>>>> 2475a76 (Resolviendo bug de register)
 export default function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
