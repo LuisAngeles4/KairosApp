@@ -32,8 +32,6 @@ export default function Decide() {
   };
 
   const handleSaveDecision = async () => {
-    console.log("GUARDADO");
-
     const user = auth.currentUser;
 
     if (!user) {
@@ -48,6 +46,7 @@ export default function Decide() {
 
     try {
       await saveDecision({
+        type: "decision", // 🔥 IMPORTANTE
         decision,
         pros,
         cons,
@@ -57,7 +56,6 @@ export default function Decide() {
 
       alert("Guardado ✅");
 
-      // limpiar campos
       setDecision("");
       setPros([]);
       setCons([]);
