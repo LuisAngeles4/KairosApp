@@ -65,3 +65,38 @@ export const getMoods = async (userId: string) => {
     return [];
   }
 };
+
+// JOURNALS
+export const saveJournal = async (data: any) => {
+  const payload = {
+    type: "journal",
+    text: data.text,
+    tags: JSON.stringify(data.tags || []),
+    date: data.date,
+    userId: data.userId,
+  };
+
+  const res = await fetch(BASE_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) throw new Error("Error saving journal");
+
+  return res.json();
+};
+
+// OBTENER JOURNALS
+export const getJournals = async (userId: string) => {
+  const res = await fetch(`${BASE_URL}?type=journal&userId=${userId}`);
+
+  const data = await res.json();
+
+  return Array.isArray(data)
+    ? data.map((item: any) => ({
+        ...item,
+        tags: JSON.parse(item.tags || "[]"),
+      }))
+    : [];
+};
