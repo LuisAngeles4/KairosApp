@@ -1,51 +1,65 @@
-import { useState } from "react";
+import { MaterialIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function Mental() {
-  const [breathing, setBreathing] = useState(false);
-
-  const startBreathing = () => {
-    setBreathing(true);
-
-    setTimeout(() => {
-      setBreathing(false);
-    }, 8000); // ciclo simple
-  };
+  const Card = ({ title, desc, onPress }: any) => (
+    <TouchableOpacity style={styles.card} onPress={onPress}>
+      <Text style={styles.cardTitle}>{title}</Text>
+      <Text style={styles.cardText}>{desc}</Text>
+    </TouchableOpacity>
+  );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Mental Wellness</Text>
+      <Text style={styles.title}>Coping Tools</Text>
+      <Text style={styles.subtitle}>
+        Quick exercises to help manage stress and anxiety
+      </Text>
 
-      {/* BREATHING */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>🧘 Breathing Exercise</Text>
-        <Text style={styles.text}>
-          Follow the rhythm: Inhale → Hold → Exhale
-        </Text>
+      <View style={styles.grid}>
+        <Card
+          title="Breathing Exercise"
+          desc="Calm your mind with guided breathing"
+          onPress={() => router.push("/wellness/breathing")}
+        />
 
-        <TouchableOpacity style={styles.btn} onPress={startBreathing}>
-          <Text style={styles.btnText}>
-            {breathing ? "Breathing..." : "Start"}
-          </Text>
-        </TouchableOpacity>
+        <Card
+          title="Positive Affirmations"
+          desc="Boost your confidence and mood"
+          onPress={() => router.push("/wellness/affirmations")}
+        />
+
+        <Card
+          title="Grounding Technique"
+          desc="5-4-3-2-1 method for anxiety"
+          onPress={() => router.push("/wellness/grounding")}
+        />
+
+        <Card
+          title="Calming Sounds"
+          desc="Relaxing ambient music"
+          onPress={() => router.push("/wellness/sounds")}
+        />
+
+        <Card
+          title="Helpful Resources"
+          desc="Articles and crisis helplines"
+          onPress={() => router.push("/wellness/resources")}
+        />
+
+        <Card
+          title="Talk to Someone"
+          desc="Find support when you need it"
+          onPress={() => router.push("/wellness/talk")}
+        />
       </View>
 
-      {/* AFFIRMATIONS */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>💬 Positive Affirmations</Text>
-
-        <Text style={styles.text}>• I am doing my best</Text>
-        <Text style={styles.text}>• I can handle this</Text>
-        <Text style={styles.text}>• I am improving every day</Text>
-      </View>
-
-      {/* GROUNDING */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>🌿 Grounding 5-4-3-2-1</Text>
-
-        <Text style={styles.text}>
-          5 things you see{"\n"}4 things you feel{"\n"}3 things you hear{"\n"}2
-          things you smell{"\n"}1 thing you taste
+      <View style={styles.tip}>
+        <Text style={styles.tipText}>
+          <MaterialIcons name="self-improvement" size={20} />
+          Remember: It's brave to use coping tools. Taking care of your mental
+          health is important!
         </Text>
       </View>
     </View>
@@ -58,34 +72,49 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#f5f5f5",
   },
+
   title: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "bold",
-    marginBottom: 15,
   },
+
+  subtitle: {
+    marginBottom: 15,
+    color: "#666",
+  },
+
+  grid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+  },
+
   card: {
+    width: "48%",
     backgroundColor: "white",
     padding: 15,
     borderRadius: 16,
-    marginBottom: 15,
-  },
-  cardTitle: {
-    fontWeight: "bold",
     marginBottom: 10,
   },
-  text: {
-    marginBottom: 5,
-    color: "#444",
-  },
-  btn: {
-    marginTop: 10,
-    backgroundColor: "#a855f7",
-    padding: 10,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  btnText: {
-    color: "white",
+
+  cardTitle: {
     fontWeight: "bold",
+    marginBottom: 5,
+  },
+
+  cardText: {
+    color: "#666",
+    fontSize: 12,
+  },
+
+  tip: {
+    marginTop: 10,
+    padding: 15,
+    backgroundColor: "#d1fae5",
+    borderRadius: 12,
+  },
+
+  tipText: {
+    color: "#065f46",
   },
 });

@@ -1,3 +1,4 @@
+import { MaterialIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -60,7 +61,8 @@ export default function Wellness() {
         <Text style={styles.tipTitle}>Today's Wellness Tips</Text>
 
         <Text style={styles.tip}>
-          🧘 Take 5 deep breaths when you feel overwhelmed
+          <MaterialIcons name="self-improvement" size={22} color="green" />
+          Take 5 deep breaths when you feel overwhelmed
         </Text>
         <Text style={styles.tip}>
           💧 Drink water regularly - dehydration affects mood
