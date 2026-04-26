@@ -1,16 +1,29 @@
 import { Ionicons } from "@expo/vector-icons";
+import Slider from "@react-native-community/slider";
 import { router } from "expo-router";
 import { signOut } from "firebase/auth";
+import { useState } from "react";
 import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { auth } from "../firebase/config";
 
 export default function Settings() {
+  // 🔔 switches
+  const [allNotif, setAllNotif] = useState(true);
+  const [moodNotif, setMoodNotif] = useState(true);
+  const [waterNotif, setWaterNotif] = useState(true);
+  const [activityNotif, setActivityNotif] = useState(false);
+
+  // 🎯 goals
+  const [waterGoal, setWaterGoal] = useState(9);
+  const [activityGoal, setActivityGoal] = useState(60);
+
   const handleLogout = async () => {
     await signOut(auth);
     router.replace("/login");
@@ -27,21 +40,117 @@ export default function Settings() {
         </TouchableOpacity>
       </View>
 
-      <ScrollView>
-        {/* SECCIÓN EJEMPLO */}
+      <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
+        {/* 🔔 NOTIFICATIONS */}
         <View style={styles.card}>
-          <Text style={styles.sectionTitle}>Support & Info</Text>
+          <Text style={styles.sectionTitle}>🔔 Notifications</Text>
+
+          {/* Row */}
+          <View style={styles.row}>
+            <View>
+              <Text>All Notifications</Text>
+              <Text style={styles.desc}>Enable or disable all reminders</Text>
+            </View>
+            <Switch value={allNotif} onValueChange={setAllNotif} />
+          </View>
+
+          {/* Divider */}
+          <View style={styles.divider} />
+
+          <View style={styles.row}>
+            <View>
+              <Text>Mood Check-in Reminders</Text>
+              <Text style={styles.desc}>Daily at 9:00 AM & 8:00 PM</Text>
+            </View>
+            <Switch value={moodNotif} onValueChange={setMoodNotif} />
+          </View>
+
+          <View style={styles.row}>
+            <View>
+              <Text>Water Reminders</Text>
+              <Text style={styles.desc}>Every 2 hours</Text>
+            </View>
+            <Switch value={waterNotif} onValueChange={setWaterNotif} />
+          </View>
+
+          <View style={styles.row}>
+            <View>
+              <Text>Activity Reminders</Text>
+              <Text style={styles.desc}>Daily at 5:00 PM</Text>
+            </View>
+            <Switch value={activityNotif} onValueChange={setActivityNotif} />
+          </View>
+        </View>
+
+        {/* 🎯 GOALS */}
+        <View style={styles.card}>
+          <Text style={styles.sectionTitle}>🎯 Daily Goals</Text>
+
+          <Text>Water Goal: {waterGoal} glasses</Text>
+          <Slider
+            minimumValue={1}
+            maximumValue={12}
+            step={1}
+            value={waterGoal}
+            onValueChange={setWaterGoal}
+          />
+
+          <Text style={{ marginTop: 10 }}>
+            Activity Goal: {activityGoal} minutes
+          </Text>
+          <Slider
+            minimumValue={10}
+            maximumValue={120}
+            step={5}
+            value={activityGoal}
+            onValueChange={setActivityGoal}
+          />
+        </View>
+
+        {/* 🌙 APPEARANCE */}
+        <View style={styles.card}>
+          <Text style={styles.sectionTitle}>🌙 Appearance</Text>
+
+          <View style={styles.row}>
+            <View>
+              <Text>Dark Mode</Text>
+              <Text style={styles.desc}>Coming soon</Text>
+            </View>
+            <Switch value={false} disabled />
+          </View>
+        </View>
+
+        {/* 🔒 PRIVACY */}
+        <View style={styles.card}>
+          <Text style={styles.sectionTitle}>🔒 Privacy & Data</Text>
 
           <TouchableOpacity style={styles.item}>
-            <Text>Help & Tutorial</Text>
+            <Text>Export My Data</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.item}>
-            <Text>About KairosApp</Text>
+            <Text>Privacy Policy</Text>
           </TouchableOpacity>
         </View>
 
-        {/* BOTÓN LOGOUT */}
+        {/* 🚨 CRISIS */}
+        <View style={styles.crisisCard}>
+          <Text style={styles.sectionTitle}>🚨 Crisis Resources</Text>
+
+          <Text style={styles.bold}>
+            988 Suicide & Crisis Lifeline: Call or text 988
+          </Text>
+          <Text style={styles.bold}>Crisis Text Line: Text HOME to 741741</Text>
+          <Text style={styles.bold}>
+            Trevor Project (LGBTQ+): 1-866-488-7386
+          </Text>
+
+          <TouchableOpacity style={styles.crisisBtn}>
+            <Text style={styles.crisisText}>📞 Quick Access Crisis Help</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* LOGOUT */}
         <TouchableOpacity style={styles.logout} onPress={handleLogout}>
           <Ionicons name="log-out-outline" size={20} color="red" />
           <Text style={styles.logoutText}>Cerrar sesión</Text>
@@ -50,6 +159,7 @@ export default function Settings() {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -82,8 +192,51 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+
+  desc: {
+    color: "#666",
+    fontSize: 12,
+  },
+
+  divider: {
+    height: 1,
+    backgroundColor: "#eee",
+    marginVertical: 10,
+  },
+
   item: {
     paddingVertical: 10,
+  },
+
+  crisisCard: {
+    backgroundColor: "#fee2e2",
+    margin: 15,
+    padding: 15,
+    borderRadius: 15,
+  },
+
+  crisisBtn: {
+    backgroundColor: "#ef4444",
+    marginTop: 10,
+    padding: 12,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+
+  crisisText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+
+  bold: {
+    fontWeight: "bold",
+    marginBottom: 5,
   },
 
   logout: {

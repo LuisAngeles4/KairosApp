@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { auth } from "../../firebase/config";
 import { saveDecision } from "../../services/decisionService";
@@ -12,9 +13,23 @@ const moods = [
 ];
 
 export default function Home() {
+  const [selectedMood, setSelectedMood] = useState<string | null>(null);
+
+  const [checks, setChecks] = useState({
+    morning: true,
+    daily: true,
+    evening: true,
+  });
+
+  const toggleCheck = (key: string) => {
+    setChecks({ ...checks, [key]: !checks[key as keyof typeof checks] });
+  };
+
   const handleSelectMood = async (mood: string) => {
     const user = auth.currentUser;
     if (!user) return;
+
+    setSelectedMood(mood);
 
     try {
       await saveDecision({
@@ -41,18 +56,28 @@ export default function Home() {
         <Text style={styles.sectionTitle}>Today's Mood</Text>
 
         <View style={styles.moodRow}>
-          {moods.map((m) => (
-            <TouchableOpacity
-              key={m.value}
-              style={styles.moodItem}
-              onPress={() => handleSelectMood(m.value)}
-            >
-              <View style={styles.iconBox}>
-                <Ionicons name={m.icon as any} size={22} color="#555" />
-              </View>
-              <Text style={styles.moodText}>{m.label}</Text>
-            </TouchableOpacity>
-          ))}
+          {moods.map((m) => {
+            const isActive = selectedMood === m.value;
+
+            return (
+              <TouchableOpacity
+                key={m.value}
+                style={styles.moodItem}
+                onPress={() => handleSelectMood(m.value)}
+              >
+                <View
+                  style={[styles.iconBox, isActive && styles.iconBoxActive]}
+                >
+                  <Ionicons
+                    name={m.icon as any}
+                    size={22}
+                    color={isActive ? "white" : "#555"}
+                  />
+                </View>
+                <Text style={styles.moodText}>{m.label}</Text>
+              </TouchableOpacity>
+            );
+          })}
         </View>
       </View>
 
@@ -60,20 +85,44 @@ export default function Home() {
       <View style={styles.card}>
         <Text style={styles.sectionTitle}>Daily Wellness Check</Text>
 
-        <View style={styles.checkItemActive}>
-          <Ionicons name="checkmark-circle" size={20} color="#22c55e" />
+        {/* Morning */}
+        <TouchableOpacity
+          style={checks.morning ? styles.checkItemActive : styles.checkItem}
+          onPress={() => toggleCheck("morning")}
+        >
+          <Ionicons
+            name={checks.morning ? "checkmark-circle" : "ellipse-outline"}
+            size={20}
+            color={checks.morning ? "#22c55e" : "#aaa"}
+          />
           <Text style={styles.checkText}>Morning Routine</Text>
-        </View>
+        </TouchableOpacity>
 
-        <View style={styles.checkItem}>
-          <Ionicons name="ellipse-outline" size={20} color="#aaa" />
+        {/* Daily */}
+        <TouchableOpacity
+          style={checks.daily ? styles.checkItemActive : styles.checkItem}
+          onPress={() => toggleCheck("daily")}
+        >
+          <Ionicons
+            name={checks.daily ? "checkmark-circle" : "ellipse-outline"}
+            size={20}
+            color={checks.daily ? "#22c55e" : "#aaa"}
+          />
           <Text style={styles.checkText}>Daily Check-in</Text>
-        </View>
+        </TouchableOpacity>
 
-        <View style={styles.checkItem}>
-          <Ionicons name="ellipse-outline" size={20} color="#aaa" />
+        {/* Evening */}
+        <TouchableOpacity
+          style={checks.evening ? styles.checkItemActive : styles.checkItem}
+          onPress={() => toggleCheck("evening")}
+        >
+          <Ionicons
+            name={checks.evening ? "checkmark-circle" : "ellipse-outline"}
+            size={20}
+            color={checks.evening ? "#22c55e" : "#aaa"}
+          />
           <Text style={styles.checkText}>Evening Reflection</Text>
-        </View>
+        </TouchableOpacity>
       </View>
 
       {/* CARD TIP */}
@@ -175,5 +224,9 @@ const styles = StyleSheet.create({
   tipText: {
     color: "white",
     marginTop: 5,
+  },
+  iconBoxActive: {
+    backgroundColor: "#22c55e",
+    borderColor: "#22c55e",
   },
 });
